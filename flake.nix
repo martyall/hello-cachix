@@ -7,8 +7,13 @@
     nixpkgs.url = "github:NixOS/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
   };
+  
+  inputs.flake-compat = {
+    url = "github:edolstra/flake-compat";
+    flake = false;
+  };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, flake-compat }:
 
   let
     supportedSystems = [
@@ -39,13 +44,13 @@
               };
             default = packages.all;
           };
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            ghcid
-            cabal-install
-            ormolu
-          ];
-          inputsFrom = builtins.attrValues self.packages.${system};
-        };
+         devShells.default = pkgs.mkShell {
+           buildInputs = with pkgs; [
+             ghcid
+             cabal-install
+             ormolu
+           ];
+           inputsFrom = builtins.attrValues self.packages.${system};
+         };
       });
 }
