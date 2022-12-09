@@ -25,7 +25,8 @@
         pkgs = import nixpkgs { inherit system overlays; inherit (haskellNix) config; };
         flake = pkgs.hixProject.flake {};
       in flake // rec
-           { packages =  
+           { legacyPackages = pkgs;
+             packages =  
                { foo = flake.packages."foo:exe:foo";
                  bar = flake.packages."bar:exe:bar";
                  all = pkgs.symlinkJoin {
@@ -36,6 +37,15 @@
                      ];
                  };
                  default = packages.all;
+               };
+             devShells =
+               { default =
+                  pkgs.hixProject.shellFor {
+                    tools = {
+                      cabal = "3.6.0.0"; # this is the version specified in all of the *.cabal files.
+                      haskell-language-server = "latest";
+                    };
+                  };
                };
            }
       );
