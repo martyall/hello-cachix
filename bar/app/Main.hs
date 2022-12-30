@@ -4,5 +4,5 @@ import qualified Bar (someFunc)
 
 main :: IO ()
 main = do
-  putStrLn "Hello, Haskell!"
+  putStrLn "Hello, Bar Haskell!"
   Bar.someFunc

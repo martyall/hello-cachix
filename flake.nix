@@ -26,9 +26,23 @@
         flake = pkgs.hixProject.flake {};
       in flake // rec
            { legacyPackages = pkgs;
-             packages =  
+             packages =  rec
                { foo = flake.packages."foo:exe:foo";
                  bar = flake.packages."bar:exe:bar";
+                 foo-docker =
+                   pkgs.dockerTools.buildImage {
+                     name = "hello-cachix-foo";
+                     config = { 
+                       Cmd = [ "${foo}/bin/foo" ]; 
+                     };
+                 }; 
+                 bar-docker =
+                   pkgs.dockerTools.buildImage {
+                     name = "hello-cachix-bar";
+                     config = { 
+                       Cmd = [ "${bar}/bin/bar" ]; 
+                     };
+                 }; 
                  all = pkgs.symlinkJoin {
                    name = "all";
                    paths = with packages;
